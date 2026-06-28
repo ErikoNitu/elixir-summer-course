@@ -32,8 +32,10 @@
 <!-- COLUMN 3: LEADERBOARD -->
   <div class="leaderboard-stack">
     <.leaderboard player_list={@player_list} />
-    <.random_event local_player={@local_player} />
+    <.random_event local_player={@local_player} :if={assigns[:attack_button] == :active} />
   </div>
+
+  <.attack_notification :if={assigns[:notification] == :activate} />
 </main>
 
 <.match_end_overlay :if={@game_state == :ended} player_list={@player_list} />

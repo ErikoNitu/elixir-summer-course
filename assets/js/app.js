@@ -57,10 +57,58 @@ const networkCopyReplacements = [
   ["Approve", "Allow"],
   ["Rejected", "Blocked"],
   ["Decline", "Block"],
-  ["Attack", "Probe"],
+  ["You were attacked!", "Packet attack detected"],
   ["Insurance", "TLS"],
   ["✉", "FW"],
 ]
+
+const decorateInterceptedPacketForm = () => {
+  document.querySelectorAll("form[phx-submit='attack']").forEach(form => {
+    form.classList.add("intercept-panel")
+    form.setAttribute("aria-label", "Intercepted packet attack panel")
+
+    if (!form.querySelector(".intercept-panel-header")) {
+      const header = document.createElement("div")
+      header.className = "intercept-panel-header"
+      header.innerHTML = `
+        <span class="intercept-panel-kicker">Intercepted Packet</span>
+        <span class="intercept-panel-id">PKT-LIVE</span>
+      `
+      form.prepend(header)
+    }
+
+    const label = form.querySelector("label[for='victim-name']")
+    if (label) label.textContent = "Target Firewall"
+
+    const input = form.querySelector("#victim-name")
+    if (input) {
+      input.placeholder = "e.g. Firewall Atlas"
+      input.setAttribute("aria-label", "Target firewall name")
+    }
+
+    const button = form.querySelector("button")
+    if (button) button.textContent = "Attack Player"
+  })
+}
+
+const decorateAttackNotification = () => {
+  document.querySelectorAll(".notification").forEach(notification => {
+    notification.classList.add("attack-notification")
+    notification.setAttribute("role", "alert")
+    notification.setAttribute("aria-live", "assertive")
+
+    if (notification.dataset.enhanced === "true") return
+
+    notification.dataset.enhanced = "true"
+    notification.innerHTML = `
+      <span class="attack-notification-pulse"></span>
+      <span class="attack-notification-copy">
+        <strong>Packet attack detected</strong>
+        <span>New hostile rule injected into your firewall.</span>
+      </span>
+    `
+  })
+}
 
 const applyNetworkCopy = () => {
   if (!document.body) return
@@ -106,6 +154,9 @@ const applyNetworkCopy = () => {
         if (updated !== value) element.setAttribute(attribute, updated)
       })
     })
+
+  decorateInterceptedPacketForm()
+  decorateAttackNotification()
 }
 
 let networkCopyPending = false

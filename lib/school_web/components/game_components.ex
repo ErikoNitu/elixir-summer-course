@@ -238,6 +238,16 @@ defmodule SchoolWeb.GameComponents do
 
   attr :player_list, :list, required: true
 
+  attr :message, :string, default: nil
+
+  def attack_notification(assigns) do
+    ~H"""
+      <div class="notification">
+        <strong>You were attacked!</strong>
+      </div>
+    """
+  end
+
   def match_end_overlay(assigns) do
     ~H"""
     <div class="match-end-overlay" style="display:flex">

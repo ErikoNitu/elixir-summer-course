@@ -1460,3 +1460,162 @@ body {
 .match-end-overlay {
     background: rgba(3, 5, 7, 0.88);
 }
+
+.intercept-panel {
+    position: relative;
+    overflow: hidden;
+    padding: 14px;
+    background: rgba(8, 13, 18, 0.94);
+    border: 1px solid rgba(255, 77, 109, 0.28);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.intercept-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(255, 77, 109, 0.16), transparent 42%),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 14px,
+            rgba(51, 214, 255, 0.05) 14px 15px
+        );
+}
+
+.intercept-panel-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 77, 109, 0.18);
+}
+
+.intercept-panel-kicker,
+.intercept-panel-id {
+    font-family: "DM Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.intercept-panel-kicker {
+    color: var(--stamp-red-light);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.intercept-panel-id {
+    color: var(--ink-muted);
+    font-size: 10px;
+}
+
+.intercept-panel .ready-input-group,
+.intercept-panel .btn {
+    position: relative;
+}
+
+.intercept-panel .ready-label {
+    color: var(--stamp-blue);
+}
+
+.intercept-panel .ready-input {
+    border-color: rgba(255, 77, 109, 0.24);
+}
+
+.intercept-panel .ready-input:focus {
+    border-color: var(--stamp-red);
+    box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.12);
+}
+
+.intercept-panel .btn {
+    width: 100%;
+    margin-top: 12px;
+    background: var(--stamp-red);
+    border-color: var(--stamp-red);
+    color: #180206;
+}
+
+.intercept-panel .btn:hover {
+    background: var(--stamp-red-light);
+    border-color: var(--stamp-red-light);
+}
+
+.notification,
+.attack-notification {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: min(340px, calc(100vw - 32px));
+    padding: 14px 16px;
+    background: rgba(8, 13, 18, 0.96);
+    border: 1px solid rgba(255, 77, 109, 0.42);
+    border-left: 3px solid var(--stamp-red);
+    border-radius: var(--radius-lg);
+    box-shadow:
+        0 0 0 1px rgba(255, 77, 109, 0.08),
+        0 16px 42px rgba(0, 0, 0, 0.42);
+    color: var(--ink);
+    animation: attackNotificationIn 0.22s ease-out;
+}
+
+.attack-notification::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(255, 77, 109, 0.12), transparent 58%);
+}
+
+.attack-notification-pulse {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--stamp-red);
+    box-shadow: 0 0 0 6px rgba(255, 77, 109, 0.12);
+    flex: 0 0 auto;
+}
+
+.attack-notification-copy {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.attack-notification-copy strong,
+.notification strong {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    line-height: 1.2;
+    color: var(--stamp-red-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.attack-notification-copy span {
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--ink-soft);
+}
+
+@keyframes attackNotificationIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

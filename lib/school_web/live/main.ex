@@ -27,6 +27,8 @@ defmodule SchoolWeb.MainLive do
       |> assign(:score, 0)
       |> assign(:player_list, [])
       |> assign(:extra_rule, nil)
+      |> assign(:notification, nil)
+      |> assign(:attack_button, :active)
 
     {:ok, new_socket}
   end
@@ -39,7 +41,27 @@ defmodule SchoolWeb.MainLive do
       {:update_rules_list, name}
     )
 
+    Process.send_after(self(), :hide_button, 1_000)
+
     {:noreply, socket}
+  end
+
+  def handle_info(:hide_button, socket) do
+    new_socket =
+      socket
+      |> assign(:attack_button, :inactive)
+
+    Process.send_after(self(), :show_button, 5_000)
+
+    {:noreply, new_socket}
+  end
+
+  def handle_info(:show_button, socket) do
+    new_socket =
+      socket
+      |> assign(:attack_button, :active)
+
+    {:noreply, new_socket}
   end
 
   def handle_info({:update_rules_list, name}, socket) do
@@ -53,13 +75,26 @@ defmodule SchoolWeb.MainLive do
 
     new_socket =
       if socket.assigns.local_player.name == name do
+
+        Process.send_after(self(), :hide_notif, 3_000)
+
         updated_socket =
           socket
           |> assign(:extra_rule, new_rule)
+          |> assign(:notification, :activate)
         updated_socket
       else
         socket
       end
+
+    {:noreply, new_socket}
+  end
+
+  def handle_info(:hide_notif, socket) do
+
+    new_socket =
+      socket
+      |> assign(:notification, nil)
 
     {:noreply, new_socket}
   end

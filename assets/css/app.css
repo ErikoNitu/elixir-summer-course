@@ -1249,3 +1249,214 @@ body {
     opacity: 0.4;
     pointer-events: none;
 }
+
+/* ===== Network Theme Overrides ===== */
+
+:root {
+    --manila: #d7faff;
+    --manila-dark: #8be8f8;
+    --manila-deep: #33d6ff;
+    --ink: #d7faff;
+    --ink-soft: #a9cbd0;
+    --ink-muted: #6f929b;
+    --stamp-red: #ff4d6d;
+    --stamp-red-light: #ff7d94;
+    --stamp-green: #4ee58a;
+    --stamp-green-light: #8df7b5;
+    --stamp-blue: #33d6ff;
+    --paper-white: #080d12;
+    --paper-line: rgba(88, 221, 255, 0.18);
+    --danger-bg: rgba(255, 77, 109, 0.09);
+    --success-bg: rgba(78, 229, 138, 0.09);
+    --shadow-sm: 0 1px 10px rgba(0, 0, 0, 0.32);
+    --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.34);
+    --shadow-card:
+        0 0 0 1px rgba(88, 221, 255, 0.08),
+        0 16px 48px rgba(0, 0, 0, 0.38);
+    --radius: 4px;
+    --radius-lg: 6px;
+}
+
+body {
+    background-color: #030507;
+    background-image:
+        linear-gradient(rgba(51, 214, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(51, 214, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 18% 18%, rgba(51, 214, 255, 0.16), transparent 26rem),
+        radial-gradient(circle at 86% 72%, rgba(78, 229, 138, 0.11), transparent 24rem);
+    background-size: 34px 34px, 34px 34px, auto, auto;
+    color: var(--ink);
+}
+
+.top-bar {
+    background: rgba(3, 5, 7, 0.92);
+    border-bottom: 1px solid rgba(51, 214, 255, 0.22);
+}
+
+.bureau-icon {
+    background: rgba(51, 214, 255, 0.12);
+    border: 1px solid rgba(51, 214, 255, 0.5);
+    border-radius: var(--radius);
+    color: var(--stamp-blue);
+    font-family: "DM Mono", monospace;
+}
+
+.bureau-name,
+.bureau-subtitle,
+.card-timer-label,
+.card-timer-seconds {
+    font-family: "DM Mono", monospace;
+}
+
+.bureau-name {
+    color: var(--ink);
+}
+
+.bureau-subtitle {
+    color: var(--ink-muted);
+}
+
+.player-score-bar,
+.package-card,
+.rules-reference,
+.leaderboard,
+.ready-section,
+.match-end-card {
+    background: rgba(8, 13, 18, 0.94);
+    border-color: var(--paper-line);
+}
+
+.player-avatar {
+    background: rgba(51, 214, 255, 0.12);
+    border: 1px solid rgba(51, 214, 255, 0.42);
+    border-radius: var(--radius);
+    color: var(--stamp-blue);
+}
+
+.package-card::before,
+.ready-section::before {
+    background: linear-gradient(
+        90deg,
+        var(--stamp-blue),
+        var(--stamp-green),
+        var(--stamp-red)
+    );
+}
+
+.rules-header,
+.leaderboard-header,
+.package-checks {
+    background: rgba(51, 214, 255, 0.05);
+}
+
+.card-header {
+    border-bottom-style: solid;
+}
+
+.card-title,
+.rules-title,
+.leaderboard-title,
+.ready-title,
+.match-end-title {
+    font-family: "DM Mono", monospace;
+    color: var(--ink);
+}
+
+.card-stamp {
+    border-color: var(--stamp-blue);
+    opacity: 0.75;
+    transform: none;
+}
+
+.card-stamp-text,
+.card-stamp-value {
+    font-family: "DM Mono", monospace;
+    color: var(--stamp-blue);
+}
+
+.field,
+.field:nth-child(odd),
+.leaderboard-item,
+.match-end-scores li,
+.rule-item {
+    border-color: rgba(88, 221, 255, 0.12);
+}
+
+.ready-input,
+.btn-decline,
+.btn-sabotage {
+    background: #05090d;
+    border-color: var(--paper-line);
+    color: var(--ink);
+}
+
+.ready-input::placeholder {
+    color: var(--ink-muted);
+}
+
+.ready-input:focus {
+    border-color: var(--stamp-blue);
+    box-shadow: 0 0 0 3px rgba(51, 214, 255, 0.12);
+}
+
+.btn,
+.btn-ready,
+.btn-new-match {
+    border-radius: var(--radius);
+}
+
+.btn:not(.btn-decline):not(.btn-approve),
+.btn-new-match {
+    background: var(--stamp-blue);
+    border-color: var(--stamp-blue);
+    color: #031016;
+}
+
+.btn:not(.btn-decline):not(.btn-approve):hover,
+.btn-new-match:hover {
+    background: var(--manila-dark);
+    border-color: var(--manila-dark);
+}
+
+.btn-approve,
+.btn-ready {
+    background: var(--stamp-green);
+    border-color: var(--stamp-green);
+    color: #031006;
+}
+
+.btn-approve:hover,
+.btn-ready:hover {
+    background: var(--stamp-green-light);
+    border-color: var(--stamp-green-light);
+}
+
+.btn-decline:hover {
+    background: var(--stamp-red);
+    border-color: var(--stamp-red);
+    color: #180206;
+}
+
+.rank-1 {
+    background: rgba(51, 214, 255, 0.12);
+    color: var(--stamp-blue);
+}
+
+.leaderboard-item:hover {
+    background: rgba(51, 214, 255, 0.06);
+}
+
+.check-tag.has {
+    background: rgba(78, 229, 138, 0.08);
+    border-color: rgba(78, 229, 138, 0.24);
+    color: var(--stamp-green);
+}
+
+.stamp-mark {
+    background: rgba(3, 5, 7, 0.72);
+    border-width: 2px;
+}
+
+.match-end-overlay {
+    background: rgba(3, 5, 7, 0.88);
+}

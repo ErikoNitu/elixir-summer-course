@@ -25,6 +25,108 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/school"
 import topbar from "../vendor/topbar"
 
+const networkCopyReplacements = [
+  ["Mail Verification Bureau", "Firewall Verification Node"],
+  ["Postal Inspector Training Division", "Firewall Operations Division"],
+  ["Senior Postal Officer", "Network Security Operator"],
+  ["Package Inspection Form", "Packet Inspection Form"],
+  ["Package Type", "Packet Type"],
+  ["Shipping Class", "Traffic Class"],
+  ["Declared Value", "Payload Value"],
+  ["Customs Form", "ACL Rule"],
+  ["Fragile Sticker", "Quarantine Tag"],
+  ["Postal Regulations", "Network Rules"],
+  ["Inspector Rankings", "Firewall Rankings"],
+  ["Inspector Name", "Firewall Name"],
+  ["Report for Duty", "Bring Firewall Online"],
+  ["Match time remaining", "Scan time remaining"],
+  ["Inspector Wazowski", "Firewall Atlas"],
+  ["Inspector", "Firewall"],
+  ["Postal", "Network"],
+  ["postal", "network"],
+  ["packages", "packets"],
+  ["Packages", "Packets"],
+  ["package", "packet"],
+  ["Package", "Packet"],
+  ["shipping", "routing"],
+  ["Shipping", "Routing"],
+  ["Postage", "Signal"],
+  ["Paid", "Open"],
+  ["PKG-", "PKT-"],
+  ["Approved", "Allowed"],
+  ["Approve", "Allow"],
+  ["Rejected", "Blocked"],
+  ["Decline", "Block"],
+  ["Attack", "Probe"],
+  ["Insurance", "TLS"],
+  ["✉", "FW"],
+]
+
+const applyNetworkCopy = () => {
+  if (!document.body) return
+
+  const skipTags = new Set(["SCRIPT", "STYLE", "TEXTAREA"])
+  const replaceCopy = value =>
+    networkCopyReplacements.reduce(
+      (text, [from, to]) => text.split(from).join(to),
+      value
+    )
+
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: node => {
+        const parent = node.parentElement
+        if (!parent || skipTags.has(parent.tagName) || !node.nodeValue.trim()) {
+          return NodeFilter.FILTER_REJECT
+        }
+
+        return NodeFilter.FILTER_ACCEPT
+      },
+    }
+  )
+
+  const textNodes = []
+  while (walker.nextNode()) textNodes.push(walker.currentNode)
+
+  textNodes.forEach(node => {
+    const updated = replaceCopy(node.nodeValue)
+    if (updated !== node.nodeValue) node.nodeValue = updated
+  })
+
+  document
+    .querySelectorAll("[placeholder], [aria-label], [title]")
+    .forEach(element => {
+      ;["placeholder", "aria-label", "title"].forEach(attribute => {
+        const value = element.getAttribute(attribute)
+        if (!value) return
+
+        const updated = replaceCopy(value)
+        if (updated !== value) element.setAttribute(attribute, updated)
+      })
+    })
+}
+
+let networkCopyPending = false
+const scheduleNetworkCopy = () => {
+  if (networkCopyPending) return
+
+  networkCopyPending = true
+  requestAnimationFrame(() => {
+    networkCopyPending = false
+    applyNetworkCopy()
+  })
+}
+
+new MutationObserver(scheduleNetworkCopy).observe(document.documentElement, {
+  childList: true,
+  subtree: true,
+  characterData: true,
+})
+document.addEventListener("DOMContentLoaded", scheduleNetworkCopy)
+window.addEventListener("phx:page-loading-stop", scheduleNetworkCopy)
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
@@ -39,6 +141,7 @@ window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
+scheduleNetworkCopy()
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
@@ -80,4 +183,3 @@ if (process.env.NODE_ENV === "development") {
     window.liveReloader = reloader
   })
 }
-

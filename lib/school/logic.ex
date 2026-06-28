@@ -14,6 +14,16 @@ defmodule School.Logic do
     rule10: "Fragile international packages over 1000g must use priority."
   }
 
+  def generate_extra_rule(active_rules) do
+
+    new_rule =
+      @desc_rules
+      |> Enum.filter(fn {rule, _} -> rule not in active_rules end)
+      |> Enum.random()
+
+    new_rule
+  end
+
   def generate_package do
     type = Enum.random([:letter, :parcel, :fragile])
     weight = calculate_weight(type)

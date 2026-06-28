@@ -26,8 +26,42 @@ defmodule SchoolWeb.MainLive do
       |> assign(:rule_descriptions, rule_descriptions)
       |> assign(:score, 0)
       |> assign(:player_list, [])
+      |> assign(:extra_rule, nil)
 
     {:ok, new_socket}
+  end
+
+  def handle_event("attack", %{"name" => name}, socket) do
+
+    Phoenix.PubSub.broadcast(
+      School.PubSub,
+      "game_room",
+      {:update_rules_list, name}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:update_rules_list, name}, socket) do
+
+    new_rule = School.Logic.generate_extra_rule(School.State.get_active_rules)
+    IO.inspect("new_rule:")
+    IO.inspect(new_rule)
+
+    IO.inspect(socket.assigns.local_player.name)
+    IO.inspect(name)
+
+    new_socket =
+      if socket.assigns.local_player.name == name do
+        updated_socket =
+          socket
+          |> assign(:extra_rule, new_rule)
+        updated_socket
+      else
+        socket
+      end
+
+    {:noreply, new_socket}
   end
 
   @impl true
@@ -132,8 +166,10 @@ defmodule SchoolWeb.MainLive do
   defp validation(swipe_direction, expected, socket) do
     package = socket.assigns.package
 
+    extra_rule = socket.assigns.extra_rule
+
     {updated_player, decision, validation_msg} =
-      State.update_player_score(self(), package, expected)
+      State.update_player_score(self(), package, expected, extra_rule)
 
     new_socket =
       socket
@@ -142,6 +178,7 @@ defmodule SchoolWeb.MainLive do
       |> assign(:local_player, updated_player)
       |> assign(:score, updated_player.score)
       |> push_event(swipe_direction, %{})
+      |> assign(:extra_rule, nil)
 
     Process.send_after(self(), :next_package, 1_000)
 

@@ -213,37 +213,26 @@ defmodule SchoolWeb.GameComponents do
 
   def random_event(assigns) do
     ~H"""
-    <div class="leaderboard">
-      <div class="leaderboard-header">
-        <div class="leaderboard-title">Attack palyer</div>
-      </div>
+    <%= if @local_player do %>
+      <.form for={%{}} phx-submit="attack">
+        <div class="ready-input-group">
+          <label class="ready-label" for="victim-name">Inspector Name</label>
+          <input
+            class="ready-input"
+            type="text"
+            id="victim-name"
+            name="name"
+            placeholder="e.g. Inspector Wazowski"
+            value=""
+            autocomplete="off"
+          />
+        </div>
 
-      <%= if @local_player do %>
-        <.form for={%{}} phx-submit="victim">
-          <div class="ready-input-group">
-            <label class="ready-label" for="inspector-name">Inspector Name</label>
-            <input
-              class="ready-input"
-              type="text"
-              id="inspector-name"
-              name="name"
-              placeholder="e.g. Inspector Wazowski"
-              value=""
-              autocomplete="off"
-            />
-          </div>
-        </.form>
-        <.form for={%{}} phx-submit="attack">
-          <div class="ready-input-group">
-            <%!-- schimbat in palyer_list + facut sa nu mai puste  --%>
-            <label class="player-name" for="inspector-name">{@local_player.name}</label>
-          </div>
-          <button class="btn">
-            Attack
-          </button>
-        </.form>
-      <% end %>
-    </div>
+        <button class="btn">
+          Attack
+        </button>
+      </.form>
+    <% end %>
     """
   end
 

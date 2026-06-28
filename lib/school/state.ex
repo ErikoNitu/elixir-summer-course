@@ -48,8 +48,8 @@ defmodule School.State do
     GenServer.call(__MODULE__, :get_active_rules)
   end
 
-  def update_player_score(pid, package, expected) do
-    GenServer.call(__MODULE__, {:update_player_score, pid, package, expected})
+  def update_player_score(pid, package, expected, extra_rule) do
+    GenServer.call(__MODULE__, {:update_player_score, pid, package, expected, extra_rule})
   end
 
   @impl true
@@ -81,12 +81,25 @@ defmodule School.State do
   end
 
   @impl true
-  def handle_call({:update_player_score, pid, package, expected}, _from, state) do
+  def handle_call({:update_player_score, pid, package, expected, extra_rule}, _from, state) do
     {[player], remaining_players} =
       Enum.split_with(state.players, fn player -> player.pid == pid end)
 
+    IO.inspect(extra_rule)
+
+    active_rules =
+      if extra_rule != nil do
+        {extract_rule, _} = extra_rule
+        [extract_rule | state.active_rules]
+      else
+        state.active_rules
+      end
+
+    IO.inspect("active_rules:")
+    IO.inspect(active_rules)
+
     {validation_result, validation_msg} =
-      Logic.validate(package, state.active_rules)
+      Logic.validate(package, active_rules)
 
     decision =
       if validation_result == expected,

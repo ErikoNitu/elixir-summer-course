@@ -77,6 +77,15 @@ const decorateInterceptedPacketForm = () => {
       form.prepend(header)
     }
 
+    if (!form.querySelector(".intercept-panel-warning")) {
+      const warning = document.createElement("p")
+      warning.className = "intercept-panel-warning"
+      warning.textContent = "If you attack another player you lose a random value between 0 and 3 points"
+      form
+        .querySelector(".intercept-panel-header")
+        ?.insertAdjacentElement("afterend", warning)
+    }
+
     const label = form.querySelector("label[for='victim-name']")
     if (label) label.textContent = "Target Firewall"
 

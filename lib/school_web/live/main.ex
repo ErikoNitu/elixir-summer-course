@@ -28,22 +28,9 @@ defmodule SchoolWeb.MainLive do
       |> assign(:player_list, [])
       |> assign(:extra_rule, nil)
       |> assign(:notification, nil)
-      |> assign(:attack_button, :active)
+      |> assign(:attack_button, :inactive)
 
     {:ok, new_socket}
-  end
-
-  def handle_event("attack", %{"name" => name}, socket) do
-
-    Phoenix.PubSub.broadcast(
-      School.PubSub,
-      "game_room",
-      {:update_rules_list, name}
-    )
-
-    Process.send_after(self(), :hide_button, 1_000)
-
-    {:noreply, socket}
   end
 
   def handle_info(:hide_button, socket) do
@@ -76,7 +63,7 @@ defmodule SchoolWeb.MainLive do
     new_socket =
       if socket.assigns.local_player.name == name do
 
-        Process.send_after(self(), :hide_notif, 3_000)
+        Process.send_after(self(), :hide_notif, 5_000)
 
         updated_socket =
           socket
@@ -95,43 +82,6 @@ defmodule SchoolWeb.MainLive do
     new_socket =
       socket
       |> assign(:notification, nil)
-
-    {:noreply, new_socket}
-  end
-
-  @impl true
-  def handle_event("join", %{"name" => name}, socket) do
-    local_player = State.add_player(name, self())
-
-    new_socket =
-      socket
-      |> assign(:local_player, local_player)
-
-    {:noreply, new_socket}
-  end
-
-  @impl true
-  def handle_event("ready", _params, socket) do
-    local_player = socket.assigns.local_player
-    {updated_local_player, _game_state} = State.player_ready(local_player.name)
-
-    new_socket =
-      socket
-      |> assign(:local_player, updated_local_player)
-
-    {:noreply, new_socket}
-  end
-
-  @impl true
-  def handle_event("decline", _params, socket) do
-    new_socket = validation("swipe-left", :invalid, socket)
-
-    {:noreply, new_socket}
-  end
-
-  @impl true
-  def handle_event("approve", _params, socket) do
-    new_socket = validation("swipe-right", :valid, socket)
 
     {:noreply, new_socket}
   end
@@ -194,6 +144,65 @@ defmodule SchoolWeb.MainLive do
     new_socket =
       socket
       |> assign(:player_list, updated_player_list)
+
+    {:noreply, new_socket}
+  end
+
+  def handle_event("attack", %{"name" => name}, socket) do
+
+    Phoenix.PubSub.broadcast(
+      School.PubSub,
+      "game_room",
+      {:update_rules_list, name}
+    )
+
+    updated_player = State.dec_player_score(self())
+
+    new_socket =
+      socket
+      |> assign(:score, updated_player.score)
+      |> assign(:local_player, updated_player)
+
+    Process.send_after(self(), :hide_button, 1_000)
+
+    {:noreply, new_socket}
+  end
+
+  @impl true
+  def handle_event("join", %{"name" => name}, socket) do
+    local_player = State.add_player(name, self())
+
+    new_socket =
+      socket
+      |> assign(:local_player, local_player)
+
+    {:noreply, new_socket}
+  end
+
+  @impl true
+  def handle_event("ready", _params, socket) do
+    local_player = socket.assigns.local_player
+    {updated_local_player, _game_state} = State.player_ready(local_player.name)
+
+    new_socket =
+      socket
+      |> assign(:local_player, updated_local_player)
+      |> assign(:attack_button, :active)
+
+
+    {:noreply, new_socket}
+  end
+
+  @impl true
+  def handle_event("decline", _params, socket) do
+    new_socket = validation("swipe-left", :invalid, socket)
+
+    {:noreply, new_socket}
+  end
+
+  @impl true
+  def handle_event("approve", _params, socket) do
+    new_socket = validation("swipe-right", :valid, socket)
 
     {:noreply, new_socket}
   end

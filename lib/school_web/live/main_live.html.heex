@@ -35,7 +35,10 @@
     <.random_event local_player={@local_player} :if={assigns[:attack_button] == :active} />
   </div>
 
-  <.attack_notification :if={assigns[:notification] == :activate} />
+  <.attack_notification
+    :if={assigns[:notification] == :activate}
+    player_list={@player_list}
+  />
 </main>
 
 <.match_end_overlay :if={@game_state == :ended} player_list={@player_list} />

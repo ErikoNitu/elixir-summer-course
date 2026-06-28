@@ -52,6 +52,34 @@ defmodule School.State do
     GenServer.call(__MODULE__, {:update_player_score, pid, package, expected, extra_rule})
   end
 
+  def dec_player_score(pid) do
+    GenServer.call(__MODULE__, {:dec_score, pid})
+  end
+
+  @impl true
+  def handle_call({:dec_score, pid}, _from,  state) do
+    {[player], remaining_players} =
+      Enum.split_with(state.players, fn player -> player.pid == pid end)
+
+    rand_val = Enum.random(0..3)
+
+    new_score = max(player.score - rand_val, 0)
+
+    updated_player = Map.put(player, :score, new_score)
+
+    updated_player_list = [updated_player | remaining_players]
+
+    Phoenix.PubSub.broadcast(
+      School.PubSub,
+      "game_room",
+      {:update_player_list, sort_by_score(updated_player_list)}
+    )
+
+    new_state = Map.put(state, :players, updated_player_list)
+
+    {:reply, updated_player, new_state}
+  end
+
   @impl true
   def handle_call({:player_ready, name}, _from, state) do
     {[player], remaining_players} =

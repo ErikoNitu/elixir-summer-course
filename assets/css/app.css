@@ -1317,12 +1317,16 @@ body {
 }
 
 .player-score-bar,
-.package-card,
 .rules-reference,
 .leaderboard,
 .ready-section,
 .match-end-card {
     background: rgba(8, 13, 18, 0.94);
+    border-color: var(--paper-line);
+}
+
+.package-card {
+    background: #080d12;
     border-color: var(--paper-line);
 }
 
@@ -1457,6 +1461,14 @@ body {
     border-width: 2px;
 }
 
+.card-reveal-wrapper:has(.package-card:not(.card-hidden)) .stamp-result {
+    opacity: 0;
+}
+
+.card-reveal-wrapper:has(.package-card.card-hidden) .stamp-result {
+    opacity: 1;
+}
+
 .match-end-overlay {
     background: rgba(3, 5, 7, 0.88);
 }
@@ -1512,6 +1524,18 @@ body {
 .intercept-panel-id {
     color: var(--ink-muted);
     font-size: 10px;
+}
+
+.intercept-panel-warning {
+    position: relative;
+    margin: -2px 0 12px;
+    padding: 8px 10px;
+    background: rgba(255, 77, 109, 0.08);
+    border: 1px solid rgba(255, 77, 109, 0.18);
+    border-radius: var(--radius);
+    color: var(--stamp-red-light);
+    font-size: 11px;
+    line-height: 1.35;
 }
 
 .intercept-panel .ready-input-group,

@@ -30,7 +30,10 @@
   <.postal_regulations rule_descriptions={@rule_descriptions} />
   
 <!-- COLUMN 3: LEADERBOARD -->
-  <.leaderboard player_list={@player_list} />
+  <div class="leaderboard-stack">
+    <.leaderboard player_list={@player_list} />
+    <.random_event local_player={@local_player} />
+  </div>
 </main>
 
 <.match_end_overlay :if={@game_state == :ended} player_list={@player_list} />
